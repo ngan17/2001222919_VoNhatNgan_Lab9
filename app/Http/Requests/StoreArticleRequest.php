@@ -24,12 +24,9 @@ class StoreArticleRequest extends FormRequest
     public function rules()
     {
         return [
-
-            'title' =>
-
-                ['required', 'string', 'max:255', 'unique:articles,title'],
-            'body' => ['required', 'string', 'min:10'],
-            'tags' => ['sometimes', 'nullable', 'string'],
+            'title' => 'required|string|max:255|unique:articles,title',
+            'body' => 'required|string|min:10',
+            'tags' => 'sometimes|nullable|string',
         ];
     }
     public function messages()

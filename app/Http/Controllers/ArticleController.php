@@ -27,7 +27,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        $this->authorize('create',Article::class);
+        $this->authorize('create', Article::class);
         return view('articles.create');
     }
     /**
@@ -52,8 +52,7 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-       
-       
+        $article = Article::findOrFail($id);  // ← THÊM DÒNG NÀY
         return view('articles.show', compact('article'));
     }
 
@@ -72,26 +71,26 @@ class ArticleController extends Controller
      * Update the specified resource in storage.
      */
     public function update(StoreArticleRequest $request, Article $article)
-{
-    $this->authorize('update', $article);
-    $data = $request->validated();
+    {
+        $this->authorize('update', $article);
+        $data = $request->validated();
 
-    if ($request->hasFile('image')) {
-        // Xóa ảnh cũ nếu tồn tại
-        if (!empty($article->image_path) && Storage::disk('public')->exists($article->image_path)) {
-            Storage::disk('public')->delete($article->image_path);
-        }
+        if ($request->hasFile('image')) {
+            // Xóa ảnh cũ nếu tồn tại
+            if (!empty($article->image_path) && Storage::disk('public')->exists($article->image_path)) {
+                Storage::disk('public')->delete($article->image_path);
+            }
 
-        // Lưu ảnh mới
-         $path = $request->file('image')->store('articles', 'public');
+            // Lưu ảnh mới
+            $path = $request->file('image')->store('articles', 'public');
             $data['image_path'] = $path; //      đường dẫn tương đối
         }
 
-    $article->update($data);
+        $article->update($data);
 
-    return redirect()->route('articles.index', $article->id)
-        ->with('success', 'Cập nhật bài viết thành công');
-}
+        return redirect()->route('articles.index', $article->id)
+            ->with('success', 'Cập nhật bài viết thành công');
+    }
 
     /**
      * Remove the specified resource from storage.
